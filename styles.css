@@ -1,0 +1,60 @@
+#moose-header {
+    display:block;
+    height:250px;
+    width: 100%;
+    object-fit:cover;
+    object-position: 40% 40%;
+}
+h1, h2 {
+    text-align: center;
+}
+.content {
+    width: 33%;
+    margin: auto
+}
+#meWithDogs {
+    display:block;
+    margin:auto;
+    width:300px
+}
+p {
+    font-size: larger;
+}
+body {
+    background-color: rgba(254,240,229,255);
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.tool-tip {
+    background-color:rgba(251,211,0,255);
+    position:relative;
+}
+
+.tool-tip::after {
+    content:attr(data-tool-tip);
+    display:block;
+    position: absolute;
+    background-color: aliceblue;
+    font-size: small;
+    padding:5px;
+    border-radius: 20px;
+    transform: scale(0);
+    left:0;
+    border: 1px solid black;
+
+
+}
+.tool-tip:hover::after{
+
+    transform: scale(1) translateY(-100%);
+
+}
+
+@media only screen and (max-width: 1000px) {
+    .content {
+        width:80%
+    }
+    #moose-header {
+        height:125px
+    }
+  }
