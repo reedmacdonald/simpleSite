@@ -23,6 +23,7 @@ p {
 body {
     background-color: rgba(254,240,229,255);
     font-family: 'Courier New', Courier, monospace;
+    margin:0;
 }
 
 .tool-tip {
