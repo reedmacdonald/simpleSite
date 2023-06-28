@@ -46,9 +46,7 @@ body {
 
 }
 .tool-tip:hover::after{
-
-    transform: scale(1) translateY(-100%);
-
+    transform: scale(1) translate(0,-100%);
 }
 
 @media only screen and (max-width: 1000px) {
