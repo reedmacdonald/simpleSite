@@ -29,9 +29,10 @@ body {
 .tool-tip {
     background-color:rgba(251,211,0,255);
     position:relative;
+    display:inline-block;
 }
 
-.tool-tip::after {
+.tool-tip::before {
     content:attr(data-tool-tip);
     display:block;
     position: absolute;
@@ -39,14 +40,16 @@ body {
     font-size: small;
     padding:5px;
     border-radius: 20px;
-    transform: scale(0);
+    visibility: hidden;
     left:0;
     border: 1px solid black;
+    height:100px;
 
 
 }
-.tool-tip:hover::after{
-    transform: scale(1) translate(0,-100%);
+.tool-tip:hover::before{
+    visibility: visible;
+    top: -110px;
 }
 
 @media only screen and (max-width: 1000px) {
