@@ -17,9 +17,6 @@ h1, h2 {
     margin:auto;
     width:300px
 }
-p {
-    font-size: larger;
-}
 body {
     background-color: rgba(254,240,229,255);
     font-family: 'Courier New', Courier, monospace;
@@ -56,7 +53,19 @@ body {
     .content {
         width:80%
     }
-    #moose-header {
-        height:125px
+    p {
+        font-size: 36px;
+    }
+    h1{
+        font-size: 46px;
+    }
+    h2 {
+        font-size: 42px;
+    }
+    .tool-tip::before {
+        font-size: 36px;
+    }
+    #meWithFish {
+        width: 100%;
     }
   }
