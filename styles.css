@@ -22,32 +22,13 @@ body {
     font-family: 'Courier New', Courier, monospace;
     margin:0;
 }
-
-.tool-tip {
-    background-color:rgba(251,211,0,255);
-    position:relative;
-    display:inline-block;
+.hideWhileLoading {
+    display:none
+}
+.hideLoaders {
+    display:none
 }
 
-.tool-tip::before {
-    content:attr(data-tool-tip);
-    display:block;
-    position: absolute;
-    background-color: aliceblue;
-    font-size: small;
-    padding:5px;
-    border-radius: 20px;
-    visibility: hidden;
-    left:0;
-    border: 1px solid black;
-    height:100px;
-
-
-}
-.tool-tip:hover::before{
-    visibility: visible;
-    top: -110px;
-}
 
 @media only screen and (max-width: 1000px) {
     .content {
@@ -61,9 +42,6 @@ body {
     }
     h2 {
         font-size: 42px;
-    }
-    .tool-tip::before {
-        font-size: 36px;
     }
     #meWithFish {
         width: 100%;
