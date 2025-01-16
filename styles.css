@@ -10,7 +10,8 @@ h1, h2 {
 }
 .content {
     width: 33%;
-    margin: auto
+    margin: auto;
+    margin-bottom: 30px;
 }
 #meWithFish {
     display:block;
