@@ -19,15 +19,24 @@ h1, h2 {
     width:300px
 }
 body {
-    background-color: rgba(254,240,229,255);
-    font-family: 'Courier New', Courier, monospace;
+    background-color: rgba(254,240,229,255) !important;
+    font-family: 'Merriweather', serif;
     margin:0;
 }
+
 .hideWhileLoading {
     display:none
 }
 .hideLoaders {
     display:none
+}
+#reedQuestion {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+#askButton {
+    margin-bottom: 1rem;
 }
 
 
@@ -36,13 +45,15 @@ body {
         width:80%
     }
     p {
-        font-size: 36px;
+        font-size: 20px;
     }
     h1{
         font-size: 46px;
+        padding: 0 10px;
     }
     h2 {
         font-size: 42px;
+        padding: 0 10px;
     }
     #meWithFish {
         width: 100%;

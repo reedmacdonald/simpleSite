@@ -1,39 +1,50 @@
 window.onload = function () {
-  const apiStuff = {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ message: 'Hello, ChatGPT!' }),
+  const reedQuestion = document.querySelector('#reedQuestion');
+  const askButton = document.querySelector('#askButton')
+  const reedAnswer = document.querySelector('#reedAnswer')
+
+
+const reedChatApiStuff=(questionAndAnswer)=> {
+  return {
+  method: 'POST',
+  headers: {
+      'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ questionAndAnswer }),
 }
-  let url=(endpoint)=>`https://9izl1e71m2.execute-api.us-west-1.amazonaws.com/prod/${endpoint}`
-  async function sendMessageToChatGPT() {
-    const response = await fetch(url('chatgpt'), apiStuff);
+}
+const reedChatUrl = (endpoint)=>`https://i0j7iryuvg.execute-api.us-west-1.amazonaws.com/prod/${endpoint}`
 
-    if (!response.ok) {
-        throw new Error('Failed to get response from server.');
-    }
-
-    const data = await response.json();
-    let chatResponse = data.choices[0].message.content
-    chatResponse = chatResponse.replace(/"/g, '');
-    document.getElementById('chatOutput').textContent = chatResponse;
-    return chatResponse; 
+let questionAnswerArray=[];
+const addQuestionToArray=()=>{
+  let question=reedQuestion.value;
+  questionAnswerArray.push({ role: "user", content:question })
+}
+const addAnswerToArray=()=>{
+  let answer=reedAnswer.innerHTML.replace(/^Answer:\s*/, '');
+  questionAnswerArray.push({
+    role:"assistant",
+    content: answer
+  })
 }
 
-async function getStyleFromChatGPT() {
-  const response = await fetch(url('chatgpt-style'), apiStuff);
+
+
+async function getBio(questionAndAnswer){
+  reedAnswer.innerText = "Getting a response...";
+  reedQuestion.value = '';
+  askButton.setAttribute("disabled","true");
+  const response = await fetch(reedChatUrl('reedchat'), reedChatApiStuff(questionAndAnswer));
 
   if (!response.ok) {
       throw new Error('Failed to get response from server.');
   }
 
   const data = await response.json();
-  let chatResponse = data.choices[0].message.content
-  chatResponse = chatResponse.replace(/`/g, '');
-  const style = document.createElement('style');
-  document.head.append(style);
-  style.textContent = chatResponse;
+  const answer = data.choices[0].message.content
+  reedAnswer.innerText = "Answer: " + answer;
+}
+const unload = ()=>{
   document.querySelectorAll('.hideWhileLoading').forEach((element) => {
     element.classList.remove('hideWhileLoading');
 });
@@ -41,10 +52,45 @@ async function getStyleFromChatGPT() {
 document.querySelectorAll('.loading').forEach((element) => {
     element.classList.add('hideLoaders');
 });
-  return chatResponse; 
 }
 
-sendMessageToChatGPT()
-getStyleFromChatGPT()
+
+//sendMessageToChatGPT()
+//getStyleFromChatGPT()
+askButton.addEventListener('click',()=>{
+  if(reedAnswer.innerHTML){
+    addAnswerToArray()
+    addQuestionToArray()
+  }else{
+    addQuestionToArray()
+  }
+  getBio(questionAnswerArray)
+})
+
+
+askButton.addEventListener('keypress', function (event) {
+  if (event.key === 'Enter' && reedQuestion.value.trim().length>0) {
+    if(reedAnswer.innerHTML){
+      addAnswerToArray()
+      addQuestionToArray()
+    }else{
+      addQuestionToArray()
+    }
+    getBio(questionAnswerArray)
+  }
+});
+
+
+
+
+reedQuestion.addEventListener('input',()=>{
+  if(reedQuestion.value.trim().length>0){
+    askButton.removeAttribute("disabled");
+  }else{
+    askButton.setAttribute("disabled","true")
+  }
+})
+unload()
+//getBio()
 
 };
