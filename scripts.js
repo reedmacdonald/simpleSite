@@ -44,15 +44,6 @@ async function getBio(questionAndAnswer){
   const answer = data.choices[0].message.content
   reedAnswer.innerText = "Answer: " + answer;
 }
-const unload = ()=>{
-  document.querySelectorAll('.hideWhileLoading').forEach((element) => {
-    element.classList.remove('hideWhileLoading');
-});
-
-document.querySelectorAll('.loading').forEach((element) => {
-    element.classList.add('hideLoaders');
-});
-}
 
 
 //sendMessageToChatGPT()
@@ -90,7 +81,7 @@ reedQuestion.addEventListener('input',()=>{
     askButton.setAttribute("disabled","true")
   }
 })
-unload()
+
 //getBio()
 
 };
