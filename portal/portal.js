@@ -13,7 +13,7 @@ window.onload = function () {
     "viewInstructionsButton"
   );
 
-  getFacts();
+  //getFacts();
 
   function normalizeItem(raw) {
     // Supports either { id: {S}, content: {S} } OR { id: {S}, answer: {S} }
