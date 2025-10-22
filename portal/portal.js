@@ -25,6 +25,7 @@ window.onload = function () {
   function appendLiWithDelete(listEl, item) {
     const li = document.createElement("li");
     li.textContent = item.content;
+    console.log(item, "<---item");
     li.dataset.id = item.id; // <-- ensure data-id is the REAL id
 
     const deleteBtn = document.createElement("button");
