@@ -14,6 +14,7 @@ window.onload = function () {
   );
 
   const viewInstructions = async () => {
+    console.log("getting instructions");
     try {
       // Fetch all facts (same as getFacts)
       const body = { httpMethod: "GET" };
