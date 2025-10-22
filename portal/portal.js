@@ -13,6 +13,8 @@ window.onload = function () {
     "viewInstructionsButton"
   );
 
+  getFacts();
+
   function normalizeItem(raw) {
     // Supports either { id: {S}, content: {S} } OR { id: {S}, answer: {S} }
     const id = raw?.id?.S ?? raw?.id ?? "";
