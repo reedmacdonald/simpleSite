@@ -38,6 +38,20 @@ body {
 #askButton {
     margin-bottom: 1rem;
 }
+#inputBox {
+    display: none;
+}
+.visible {
+    display: block !important;
+}
+#factsList {
+    height:900px;
+    overflow: scroll;
+    display:none;
+}
+.portal-content {
+    width:60%;
+}
 
 
 @media only screen and (max-width: 1000px) {
@@ -59,3 +73,170 @@ body {
         width: 100%;
     }
   }
+
+  /* =============== */
+/* GLOBAL LAYOUT */
+/* =============== */
+
+body:has(.portal-content) {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 10px;
+  padding-top: 64px;
+}
+
+.portal-content {
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  border: 1px solid #30363d;
+}
+
+/* =============== */
+/* HEADINGS */
+/* =============== */
+.portal-content h1 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+/* =============== */
+/* BUTTONS */
+/* =============== */
+.portal-content .btn {
+  margin: 0.3rem;
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.portal-content .btn:hover {
+  background-color: #2ea043;
+  transform: translateY(-1px);
+}
+
+.portal-content .btn:active {
+  transform: translateY(1px);
+}
+
+/* =============== */
+/* FACTS LIST */
+/* =============== */
+#factsList {
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+  text-align: left;
+  max-height: 400px;
+  overflow-y: auto;
+  border-top: 1px solid #30363d;
+  border-bottom: 1px solid #30363d;
+}
+
+#factsList li {
+  padding: 10px 12px;
+  background: whitesmoke;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.15s ease;
+}
+
+#factsList li:hover {
+  background: #d8f9ff;
+}
+
+/* delete “x” button styling */
+#factsList button {
+  background: none;
+  border: none;
+  color: #ff7b72;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: color 0.15s ease;
+}
+
+#factsList button:hover {
+  color: #ffa198;
+}
+
+/* =============== */
+/* INPUT AREA */
+/* =============== */
+#inputBox {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#inputBoxInput {
+  flex: 1;
+  max-width: 400px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #30363d;
+  background: #0d1117;
+  color: #e6e6e6;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+#inputBoxInput:focus {
+  border-color: #58a6ff;
+}
+
+#submitFactButton {
+  background-color: #1f6feb;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+#submitFactButton:hover {
+  background-color: #388bfd;
+}
+
+
+/* Tweak the main card to sit nicely under the navbar */
+.portal-content {
+  margin-top: 12px;
+}
+
+/* ===== Fade-in list animation ===== */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Start hidden; we'll add a .show class via JS */
+#factsList li {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+/* When .show is present, animate in */
+#factsList li.show {
+  animation: fadeSlideUp 300ms ease forwards;
+}
+
+/* Nice stagger: each item delays slightly */
+#factsList li.show:nth-child(1) { animation-delay: 40ms; }
+#factsList li.show:nth-child(2) { animation-delay: 80ms; }
+#factsList li.show:nth-child(3) { animation-delay: 120ms; }
+#factsList li.show:nth-child(4) { animation-delay: 160ms; }
+#factsList li.show:nth-child(5) { animation-delay: 200ms; }
+/* (it’s fine if more items all share the same later delay) */

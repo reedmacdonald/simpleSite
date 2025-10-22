@@ -30,19 +30,37 @@ const addAnswerToArray=()=>{
 
 
 
-async function getBio(questionAndAnswer){
-  reedAnswer.innerText = "Getting a response...";
-  reedQuestion.value = '';
-  askButton.setAttribute("disabled","true");
-  const response = await fetch(reedChatUrl('reedchat'), reedChatApiStuff(questionAndAnswer));
+async function getBio(questionAndAnswer) {
+  try {
+    reedAnswer.innerText = "Getting a response...";
+    reedQuestion.value = '';
+    askButton.setAttribute("disabled", "true");
 
-  if (!response.ok) {
+    console.log("Sending request to:", reedChatUrl('reedchat'));
+    console.log("Request payload:", questionAndAnswer);
+
+    const response = await fetch(
+      reedChatUrl('reedchat'),
+      reedChatApiStuff(questionAndAnswer)
+    );
+
+    if (!response.ok) {
+      console.error("Server returned non-OK response:", response.status, response.statusText);
       throw new Error('Failed to get response from server.');
-  }
+    }
 
-  const data = await response.json();
-  const answer = data.choices[0].message.content
-  reedAnswer.innerText = "Answer: " + answer;
+    const data = await response.json();
+    console.log("Full response data:", data);
+
+    const answer = data.choices[0].message.content;
+    reedAnswer.innerText = "Answer: " + answer;
+
+  } catch (error) {
+    console.error("Error in getBio:", error);
+    reedAnswer.innerText = "⚠️ Error: " + error.message;
+  } finally {
+    askButton.removeAttribute("disabled");
+  }
 }
 
 
