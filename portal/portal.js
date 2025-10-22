@@ -13,55 +13,59 @@ window.onload = function () {
     "viewInstructionsButton"
   );
 
+  function normalizeItem(raw) {
+    // Supports either { id: {S}, content: {S} } OR { id: {S}, answer: {S} }
+    const id = raw?.id?.S ?? raw?.id ?? "";
+    const content = raw?.content?.S ?? raw?.answer?.S ?? "";
+    return { id: String(id), content: String(content) };
+  }
+
+  function appendLiWithDelete(listEl, item) {
+    const li = document.createElement("li");
+    li.textContent = item.content;
+    li.dataset.id = item.id; // <-- ensure data-id is the REAL id
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "x";
+    deleteBtn.style.marginLeft = "10px";
+    deleteBtn.style.cursor = "pointer";
+    deleteBtn.style.color = "#ff7b72";
+    deleteBtn.style.background = "none";
+    deleteBtn.style.border = "none";
+
+    deleteBtn.addEventListener("click", async () => {
+      const id = li.dataset.id;
+      console.log(`Deleting item with id: ${id}`);
+      li.remove();
+      await deleteFact(id);
+    });
+
+    li.appendChild(deleteBtn);
+    factsList.appendChild(li);
+  }
+
   const viewInstructions = async () => {
-    console.log("getting instructions");
     try {
-      // Fetch all facts (same as getFacts)
       const body = { httpMethod: "GET" };
       const response = await fetch(
         reedChatUrl("reedchat-2"),
         reedChatApiStuff(body)
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch instructions.");
-      }
+      if (!response.ok) throw new Error("Failed to fetch instructions.");
 
       const data = await response.json();
 
-      // Filter only "Instruction:" items
+      // Normalize, keep id, filter IN Instruction: items
       const instructions = data
-        .map((fact) => fact.answer?.S || "") // adjust if your key is 'content' instead of 'answer'
-        .filter((text) => text.startsWith("Instruction: "))
-        .map((text) => text.replace(/^Instruction:\s*/, "")); // remove the prefix
+        .map(normalizeItem)
+        .filter((it) => it.content.startsWith("Instruction: "))
+        .map((it) => ({
+          id: it.id,
+          content: it.content.replace(/^Instruction:\s*/, ""), // strip label for display only
+        }));
 
-      // Clear the existing list and show instructions
       factsList.innerHTML = "";
-      instructions.forEach((instr) => {
-        const li = document.createElement("li");
-        li.textContent = instr;
-
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "x";
-        deleteBtn.style.marginLeft = "10px";
-        deleteBtn.style.cursor = "pointer";
-        deleteBtn.style.color = "#ff7b72";
-        deleteBtn.style.background = "none";
-        deleteBtn.style.border = "none";
-        deleteBtn.addEventListener("click", async () => {
-          const id = li.dataset.id;
-          console.log(`Deleting instruction with id: ${id}`);
-          li.remove();
-          await deleteFact(id);
-        });
-
-        li.appendChild(deleteBtn);
-        factsList.appendChild(li);
-        factsList.classList.add("visible");
-      });
-
-      factsList.classList.add("showing-instructions");
-
+      instructions.forEach((item) => appendLiWithDelete(factsList, item));
       console.log(`✅ Displayed ${instructions.length} instructions`);
     } catch (err) {
       console.error("❌ Error fetching instructions:", err);
@@ -207,52 +211,21 @@ window.onload = function () {
 
   async function getFacts() {
     const body = { httpMethod: "GET" };
+    const response = await fetch(
+      reedChatUrl("reedchat-2"),
+      reedChatApiStuff(body)
+    );
+    if (!response.ok) throw new Error("Failed to get facts from server.");
 
-    try {
-      const response = await fetch(
-        reedChatUrl("reedchat-2"),
-        reedChatApiStuff(body)
-      );
-      if (!response.ok) throw new Error("Failed to get facts from server.");
+    const data = await response.json();
 
-      const data = await response.json();
+    // Normalize to {id, content}, then filter OUT Instruction: items
+    const items = data
+      .map(normalizeItem)
+      .filter((it) => !it.content.startsWith("Instruction: "));
 
-      // Filter out instructions
-      const facts = data
-        .map((fact) => fact.answer?.S || "") // or fact.content?.S depending on your backend
-        .filter((text) => !text.startsWith("Instruction: "));
-
-      // Clear list before adding new facts
-      factsList.innerHTML = "";
-
-      // Display facts
-      facts.forEach((fact) => {
-        const li = document.createElement("li");
-        li.textContent = fact;
-        li.dataset.id = fact; // or fact.id?.S if you have one
-
-        // Add delete "x" button
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "x";
-        deleteBtn.style.marginLeft = "10px";
-        deleteBtn.style.cursor = "pointer";
-        deleteBtn.style.color = "#ff7b72";
-        deleteBtn.style.background = "none";
-        deleteBtn.style.border = "none";
-        deleteBtn.addEventListener("click", async () => {
-          const id = li.dataset.id;
-          console.log(`Deleting item with id: ${id}`);
-          li.remove();
-          await deleteFact(id);
-        });
-
-        li.appendChild(deleteBtn);
-        factsList.appendChild(li);
-      });
-
-      console.log(`✅ Displayed ${facts.length} facts`);
-    } catch (err) {
-      console.error("❌ Error fetching facts:", err);
-    }
+    factsList.innerHTML = "";
+    items.forEach((item) => appendLiWithDelete(factsList, item));
+    console.log(`✅ Displayed ${items.length} facts`);
   }
 };
