@@ -12,6 +12,119 @@ window.onload = function () {
   const viewInstructionsButton = document.getElementById(
     "viewInstructionsButton"
   );
+  // === inside window.onload, near your other DOM lookups ===
+  const uploadFile = document.getElementById("uploadFile");
+  const uploadDesc = document.getElementById("uploadDesc");
+  const uploadBtn = document.getElementById("uploadBtn");
+  const uploadStatus = document.getElementById("uploadStatus");
+
+  // Optional: if you added a portal token gate
+  // const PORTAL_TOKEN = 'your-shared-secret';
+
+  uploadBtn?.addEventListener("click", async () => {
+    try {
+      const file = uploadFile.files?.[0];
+      if (!file) {
+        alert("Choose an image");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        alert("Only image files allowed");
+        return;
+      }
+
+      uploadBtn.disabled = true;
+      uploadStatus.textContent = "Requesting upload URL…";
+
+      // 1) Ask Lambda for presigned URL + create metadata row
+      const initBody = {
+        httpMethod: "UPLOAD_INIT",
+        fileName: file.name,
+        contentType: file.type,
+        description: uploadDesc.value || "",
+      };
+
+      const initRes = await fetch(reedChatUrl("reedchat-2"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // 'X-Portal-Token': PORTAL_TOKEN,
+        },
+        body: JSON.stringify(initBody),
+      });
+
+      if (!initRes.ok) {
+        const t = await initRes.text();
+        throw new Error(`Init failed ${initRes.status}: ${t}`);
+      }
+
+      const { uploadUrl, url, id } = await initRes.json();
+
+      // 2) Upload the file directly to S3
+      uploadStatus.textContent = "Uploading to S3…";
+      const putRes = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!putRes.ok) {
+        const t = await putRes.text();
+        throw new Error(`S3 upload failed ${putRes.status}: ${t}`);
+      }
+
+      uploadStatus.textContent = "✅ Uploaded!";
+
+      // 3) Add a preview item to the list (reusing your delete flow)
+      const item = { id, content: uploadDesc.value || "(no description)" };
+      appendImageLiWithDelete(factsList, item, url);
+
+      // reset inputs
+      uploadFile.value = "";
+      uploadDesc.value = "";
+    } catch (err) {
+      console.error("Upload error:", err);
+      uploadStatus.textContent = "❌ " + err.message;
+    } finally {
+      uploadBtn.disabled = false;
+    }
+  });
+
+  // Helper: append an <li> with thumbnail + delete “x”
+  function appendImageLiWithDelete(listEl, item, imgUrl) {
+    const li = document.createElement("li");
+    li.dataset.id = item.id;
+
+    const textSpan = document.createElement("span");
+    textSpan.textContent = item.content;
+
+    const img = document.createElement("img");
+    img.src = imgUrl;
+    img.alt = "uploaded image";
+    img.style.maxHeight = "64px";
+    img.style.marginLeft = "12px";
+    img.style.borderRadius = "6px";
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "x";
+    deleteBtn.style.marginLeft = "10px";
+    deleteBtn.style.cursor = "pointer";
+    deleteBtn.style.color = "#ff7b72";
+    deleteBtn.style.background = "none";
+    deleteBtn.style.border = "none";
+
+    deleteBtn.addEventListener("click", async () => {
+      const id = li.dataset.id;
+      console.log(`Deleting image with id: ${id}`);
+      li.remove();
+      await deleteFact(id); // reuses your existing delete endpoint (deletes by id).
+      // On the backend, make sure delete also handles kind:"image" (S3 DeleteObject + DynamoDB DeleteItem).
+    });
+
+    li.appendChild(textSpan);
+    li.appendChild(img);
+    li.appendChild(deleteBtn);
+    listEl.appendChild(li);
+  }
 
   //getFacts();
 
