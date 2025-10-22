@@ -1,85 +1,85 @@
 #moose-header {
-    display:block;
-    height:250px;
-    width: 100%;
-    object-fit:cover;
-    object-position: 40% 40%;
+  display: block;
+  height: 250px;
+  width: 100%;
+  object-fit: cover;
+  object-position: 40% 40%;
 }
-h1, h2 {
-    text-align: center;
+h1,
+h2 {
+  text-align: center;
 }
 .content {
-    width: 33%;
-    margin: auto;
-    margin-bottom: 30px;
+  width: 33%;
+  margin: auto;
+  margin-bottom: 30px;
 }
 #meWithFish {
-    display:block;
-    margin:auto;
-    width:300px
+  display: block;
+  margin: auto;
+  width: 300px;
 }
 body {
-    background-color: rgba(254,240,229,255) !important;
-    font-family: 'Merriweather', serif;
-    margin:0;
+  background-color: rgba(254, 240, 229, 255) !important;
+  font-family: "Merriweather", serif;
+  margin: 0;
 }
 
 .hideWhileLoading {
-    display:none
+  display: none;
 }
 .hideLoaders {
-    display:none
+  display: none;
 }
 #reedQuestion {
-    display: block;
-    width: 100%;
-    margin-bottom: 1rem;
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
 }
 #askButton {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 #inputBox {
-    display: none;
+  display: none;
 }
 .visible {
-    display: block !important;
+  display: block !important;
 }
 #factsList {
-    height:900px;
-    overflow: scroll;
-    display:none;
+  height: 900px;
+  overflow: scroll;
+  display: none;
 }
 .portal-content {
-    width:60%;
+  width: 60%;
 }
 
-
 @media only screen and (max-width: 1000px) {
-    .content {
-        width:80%
-    }
-    p {
-        font-size: 20px;
-    }
-    h1{
-        font-size: 46px;
-        padding: 0 10px;
-    }
-    h2 {
-        font-size: 42px;
-        padding: 0 10px;
-    }
-    #meWithFish {
-        width: 100%;
-    }
+  .content {
+    width: 80%;
   }
+  p {
+    font-size: 20px;
+  }
+  h1 {
+    font-size: 46px;
+    padding: 0 10px;
+  }
+  h2 {
+    font-size: 42px;
+    padding: 0 10px;
+  }
+  #meWithFish {
+    width: 100%;
+  }
+}
 
-  /* =============== */
+/* =============== */
 /* GLOBAL LAYOUT */
 /* =============== */
 
 body:has(.portal-content) {
-  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -197,7 +197,6 @@ body:has(.portal-content) {
 }
 
 #submitFactButton {
-  background-color: #1f6feb;
   border: none;
   color: white;
   border-radius: 8px;
@@ -210,7 +209,6 @@ body:has(.portal-content) {
   background-color: #388bfd;
 }
 
-
 /* Tweak the main card to sit nicely under the navbar */
 .portal-content {
   margin-top: 12px;
@@ -218,13 +216,19 @@ body:has(.portal-content) {
 
 /* ===== Fade-in list animation ===== */
 @keyframes fadeSlideUp {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Start hidden; we'll add a .show class via JS */
 #factsList li {
-  opacity: 0;
+  /*opacity: 0;*/
   transform: translateY(6px);
 }
 
@@ -234,9 +238,25 @@ body:has(.portal-content) {
 }
 
 /* Nice stagger: each item delays slightly */
-#factsList li.show:nth-child(1) { animation-delay: 40ms; }
-#factsList li.show:nth-child(2) { animation-delay: 80ms; }
-#factsList li.show:nth-child(3) { animation-delay: 120ms; }
-#factsList li.show:nth-child(4) { animation-delay: 160ms; }
-#factsList li.show:nth-child(5) { animation-delay: 200ms; }
+#factsList li.show:nth-child(1) {
+  animation-delay: 40ms;
+}
+#factsList li.show:nth-child(2) {
+  animation-delay: 80ms;
+}
+#factsList li.show:nth-child(3) {
+  animation-delay: 120ms;
+}
+#factsList li.show:nth-child(4) {
+  animation-delay: 160ms;
+}
+#factsList li.show:nth-child(5) {
+  animation-delay: 200ms;
+}
 /* (it’s fine if more items all share the same later delay) */
+
+#factsList.showing-instructions li {
+  background: #1f2937; /* darker */
+  border-left: 4px solid #facc15; /* yellow highlight */
+  color: whitesmoke;
+}

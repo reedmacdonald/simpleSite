@@ -2,16 +2,103 @@ window.onload = function () {
   console.log("YOU are in the portal");
   const factsButton = document.querySelector("#getFactsButton");
   const factsList = document.querySelector("#factsList");
-  const addFactsButton = document.querySelector("#addFactsButton");
-  const deleteFactsButton = document.querySelector("#deleteFactsButton");
-  const hideFactsButton = document.querySelector("#hideFactsButton");
-  const inputBox = document.querySelector("#inputBox");
   const inputBoxInput = document.querySelector("#inputBoxInput");
   const submitFactButton = document.querySelector("#submitFactButton");
   const portalEnterBtn = document.getElementById("portal-enter");
   const portalPassInput = document.getElementById("portal-pass");
   const portalGate = document.getElementById("portal-gate");
   const portalMsg = document.getElementById("portal-msg");
+  const addInstructionButton = document.getElementById("addInstructionButton");
+  const viewInstructionsButton = document.getElementById(
+    "viewInstructionsButton"
+  );
+
+  const viewInstructions = async () => {
+    try {
+      // Fetch all facts (same as getFacts)
+      const body = { httpMethod: "GET" };
+      const response = await fetch(
+        reedChatUrl("reedchat-2"),
+        reedChatApiStuff(body)
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch instructions.");
+      }
+
+      const data = await response.json();
+
+      // Filter only "Instruction:" items
+      const instructions = data
+        .map((fact) => fact.answer?.S || "") // adjust if your key is 'content' instead of 'answer'
+        .filter((text) => text.startsWith("Instruction: "))
+        .map((text) => text.replace(/^Instruction:\s*/, "")); // remove the prefix
+
+      // Clear the existing list and show instructions
+      factsList.innerHTML = "";
+      instructions.forEach((instr) => {
+        const li = document.createElement("li");
+        li.textContent = instr;
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "x";
+        deleteBtn.style.marginLeft = "10px";
+        deleteBtn.style.cursor = "pointer";
+        deleteBtn.style.color = "#ff7b72";
+        deleteBtn.style.background = "none";
+        deleteBtn.style.border = "none";
+        deleteBtn.addEventListener("click", async () => {
+          const id = li.dataset.id;
+          console.log(`Deleting instruction with id: ${id}`);
+          li.remove();
+          await deleteFact(id);
+        });
+
+        li.appendChild(deleteBtn);
+        factsList.appendChild(li);
+      });
+
+      factsList.classList.add("showing-instructions");
+
+      console.log(`✅ Displayed ${instructions.length} instructions`);
+    } catch (err) {
+      console.error("❌ Error fetching instructions:", err);
+    }
+  };
+
+  viewInstructionsButton.addEventListener("click", viewInstructions);
+
+  addInstructionButton.addEventListener("click", async () => {
+    const newInstruction = inputBoxInput.value.trim();
+    if (!newInstruction) {
+      alert("Please type an instruction first!");
+      return;
+    }
+
+    const instructionWithPrefix = `Instruction: ${newInstruction}`;
+
+    const body = {
+      httpMethod: "POST",
+      id: String(Math.floor(Math.random() * 1000000000) + 1),
+      question: "idk",
+      answer: instructionWithPrefix,
+    };
+    console.log(body, "<----body");
+
+    try {
+      const response = await fetch(
+        reedChatUrl("reedchat-2"),
+        reedChatApiStuff(body)
+      );
+      if (!response.ok) throw new Error("Failed to add instruction.");
+
+      console.log(`✅ Instruction added: ${instructionWithPrefix}`);
+      inputBoxInput.value = "";
+      await getFacts(); // reuse your fact list refresh function
+    } catch (err) {
+      console.error("❌ Error adding instruction:", err);
+    }
+  });
 
   if (portalEnterBtn && portalPassInput && portalGate) {
     const tryUnlock = () => {
@@ -53,22 +140,10 @@ window.onload = function () {
   factsButton.addEventListener("click", () => {
     factsList.classList.add("visible");
     getFacts();
-  });
-
-  hideFactsButton.addEventListener("click", () => {
-    factsList.classList.remove("visible");
+    factsList.classList.remove("showing-instructions");
   });
 
   let inputShown = false;
-  addFactsButton.addEventListener("click", () => {
-    if (inputShown) {
-      inputShown = false;
-      inputBox.classList.add("visible");
-    } else {
-      inputShown = true;
-      inputBox.classList.remove("visible");
-    }
-  });
 
   async function deleteFact(id) {
     try {
@@ -114,41 +189,6 @@ window.onload = function () {
     await getFacts();
   });
 
-  deleteFactsButton.addEventListener("click", async () => {
-    //factsList.classList.add("visible");
-    //await getFacts();
-    const listItems = factsList.querySelectorAll("li");
-    let showX = false;
-    if (!showX) {
-      listItems.forEach(async (li) => {
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "x";
-        deleteBtn.style.marginLeft = "10px";
-        deleteBtn.style.cursor = "pointer";
-
-        // Add click event to remove the li
-        deleteBtn.addEventListener("click", async () => {
-          const id = li.dataset.id; // get the fact's ID
-          console.log(`Deleting item with id: ${id}`);
-          li.remove(); // remove the li from the DOM
-          await deleteFact(id);
-          // Optionally, call your API here to delete from DynamoDB
-          // deleteFact(id);
-        });
-
-        // Append the button to the li
-        li.appendChild(deleteBtn);
-      });
-      showX = true;
-    } else {
-      const deleteButtons = factsList.querySelectorAll("button");
-
-      deleteButtons.forEach((btn) => {
-        btn.remove(); // removes the button, keeps the <li> intact
-      });
-    }
-  });
-
   const reedChatApiStuff = (body) => {
     return {
       method: "POST",
@@ -164,29 +204,52 @@ window.onload = function () {
 
   async function getFacts() {
     const body = { httpMethod: "GET" };
-    const response = await fetch(
-      reedChatUrl("reedchat-2"),
-      reedChatApiStuff(body)
-    );
-    if (!response.ok) throw new Error("Failed to get response from server.");
 
-    const data = await response.json();
+    try {
+      const response = await fetch(
+        reedChatUrl("reedchat-2"),
+        reedChatApiStuff(body)
+      );
+      if (!response.ok) throw new Error("Failed to get facts from server.");
 
-    // Clear existing items (and their animation state)
-    factsList.innerHTML = "";
+      const data = await response.json();
 
-    // Populate and animate with a light stagger (40ms * index)
-    data.forEach((fact, i) => {
-      const li = document.createElement("li");
+      // Filter out instructions
+      const facts = data
+        .map((fact) => fact.answer?.S || "") // or fact.content?.S depending on your backend
+        .filter((text) => !text.startsWith("Instruction: "));
 
-      // NOTE: adjust the field names below to match your DynamoDB shape
-      // You used fact.answer.S in your code; if your item has an `id`, prefer that:
-      // li.dataset.id = fact.id?.S || fact.answer?.S;
-      li.textContent = fact.answer?.S || "";
-      li.dataset.id = fact.id?.S || fact.answer?.S || ""; // fallbacks to avoid undefined
+      // Clear list before adding new facts
+      factsList.innerHTML = "";
 
-      factsList.appendChild(li);
-      animateLi(li, 40 * (i + 1)); // staggered fade-in
-    });
+      // Display facts
+      facts.forEach((fact) => {
+        const li = document.createElement("li");
+        li.textContent = fact;
+        li.dataset.id = fact; // or fact.id?.S if you have one
+
+        // Add delete "x" button
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "x";
+        deleteBtn.style.marginLeft = "10px";
+        deleteBtn.style.cursor = "pointer";
+        deleteBtn.style.color = "#ff7b72";
+        deleteBtn.style.background = "none";
+        deleteBtn.style.border = "none";
+        deleteBtn.addEventListener("click", async () => {
+          const id = li.dataset.id;
+          console.log(`Deleting item with id: ${id}`);
+          li.remove();
+          await deleteFact(id);
+        });
+
+        li.appendChild(deleteBtn);
+        factsList.appendChild(li);
+      });
+
+      console.log(`✅ Displayed ${facts.length} facts`);
+    } catch (err) {
+      console.error("❌ Error fetching facts:", err);
+    }
   }
 };
