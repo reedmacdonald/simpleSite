@@ -97,6 +97,7 @@ window.onload = function () {
       console.log(`✅ Instruction added: ${instructionWithPrefix}`);
       inputBoxInput.value = "";
       await getFacts(); // reuse your fact list refresh function
+      factsList.classList.remove("showing-instructions");
     } catch (err) {
       console.error("❌ Error adding instruction:", err);
     }
