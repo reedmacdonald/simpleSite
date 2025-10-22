@@ -56,6 +56,7 @@ window.onload = function () {
 
         li.appendChild(deleteBtn);
         factsList.appendChild(li);
+        factsList.classList.add("visible");
       });
 
       factsList.classList.add("showing-instructions");
