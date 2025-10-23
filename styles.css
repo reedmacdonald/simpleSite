@@ -73,6 +73,11 @@ body {
     width: 100%;
   }
 }
+body:has(.content) {
+  img:nth-of-type(3) {
+    display: none;
+  }
+}
 
 /* =============== */
 /* GLOBAL LAYOUT */

@@ -60,10 +60,12 @@ window.onload = function () {
       if (imageMatch) {
         const imgUrl = imageMatch[1];
 
+        const altText = imageMatch ? imageMatch[1].trim() : "related image";
+
         // Insert image above the answer (or wherever you like)
         const img = document.createElement("img");
         img.src = imgUrl;
-        img.alt = "related image";
+        img.alt = altText;
         img.style.maxWidth = "100%";
         img.style.borderRadius = "8px";
         img.style.margin = "8px 0";
