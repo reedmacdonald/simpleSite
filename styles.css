@@ -18,6 +18,7 @@ h2 {
   display: block;
   margin: auto;
   width: 300px;
+  border-radius: 8px;
 }
 body {
   background-color: rgba(254, 240, 229, 255) !important;
