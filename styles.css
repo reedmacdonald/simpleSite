@@ -154,6 +154,10 @@ body:has(.portal-content) {
   justify-content: space-between;
   transition: all 0.15s ease;
 }
+#factsList li span {
+  width: 80%;
+  outline: 1px solid red;
+}
 
 #factsList li:hover {
   background: #d8f9ff;
