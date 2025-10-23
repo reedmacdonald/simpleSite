@@ -80,6 +80,10 @@ body {
   display: none;
 }
 
+.content p {
+  font-size: 20px;
+}
+
 /* =============== */
 /* GLOBAL LAYOUT */
 /* =============== */
