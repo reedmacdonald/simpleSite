@@ -80,7 +80,7 @@ window.onload = function () {
         document.body.classList.add("chat-has-image");
 
         // Optionally strip the IMAGE line from the text we show
-        const cleaned = raw.replace(/^IMAGE:.*\n?/, "");
+        const cleaned = raw.replace(/^IMAGE:.*(?:\n|$)/m, "");
         reedAnswer.innerText = "Answer: " + cleaned.trim();
       } else {
         reedAnswer.innerText = "Answer: " + raw;
