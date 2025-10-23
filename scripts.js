@@ -34,6 +34,12 @@ window.onload = function () {
       reedQuestion.value = "";
       askButton.setAttribute("disabled", "true");
 
+      const oldChatImage = document.querySelector(".chatbot-image");
+      if (oldChatImage) {
+        oldChatImage.remove();
+        document.body.classList.remove("chat-has-image"); // restore meWithFish if you're using that CSS toggle
+      }
+
       console.log("Sending request to:", reedChatUrl("reedchat"));
       console.log("Request payload:", questionAndAnswer);
 
@@ -69,7 +75,9 @@ window.onload = function () {
         img.style.maxWidth = "100%";
         img.style.borderRadius = "8px";
         img.style.margin = "8px 0";
+        img.classList.add("chatbot-image");
         reedAnswer.after(img);
+        document.body.classList.add("chat-has-image");
 
         // Optionally strip the IMAGE line from the text we show
         const cleaned = raw.replace(/^IMAGE:.*\n?/, "");

@@ -78,6 +78,9 @@ body:has(.content) {
     display: none;
   }
 }
+.content .chat-has-image #meWithFish {
+  display: none;
+}
 
 /* =============== */
 /* GLOBAL LAYOUT */
