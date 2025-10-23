@@ -157,7 +157,6 @@ body:has(.portal-content) {
 }
 #factsList li span {
   width: 80%;
-  outline: 1px solid red;
 }
 
 #factsList li:hover {
