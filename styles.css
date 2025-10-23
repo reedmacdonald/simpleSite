@@ -77,12 +77,6 @@ body {
 .chat-has-image .content #meWithFish {
   display: none;
 }
-.chat-has-image {
-  outline: 5px solid red;
-}
-.chat-has-image .content #meWithFish {
-  outline: 5px solid purple;
-}
 
 /* =============== */
 /* GLOBAL LAYOUT */
