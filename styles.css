@@ -195,8 +195,6 @@ body:has(.portal-content) {
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
   border: 1px solid #30363d;
-  background: #0d1117;
-  color: #e6e6e6;
   outline: none;
   transition: border-color 0.2s ease;
 }
