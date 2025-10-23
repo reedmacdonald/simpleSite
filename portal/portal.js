@@ -53,6 +53,8 @@ window.onload = function () {
       thumb.src = imgItem.url;
       thumb.alt = imgItem.content || "uploaded image";
       thumb.style.maxHeight = "80px";
+      thumb.style.maxWidth = "80px";
+      thumb.style.objectFit = "cover";
       thumb.style.borderRadius = "6px";
 
       const caption = document.createElement("span");
