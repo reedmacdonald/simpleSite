@@ -17,9 +17,91 @@ window.onload = function () {
   const uploadDesc = document.getElementById("uploadDesc");
   const uploadBtn = document.getElementById("uploadBtn");
   const uploadStatus = document.getElementById("uploadStatus");
+  const viewImagesButton = document.getElementById("viewImagesButton");
 
   // Optional: if you added a portal token gate
   // const PORTAL_TOKEN = 'your-shared-secret';
+
+  function normalizeItem(raw) {
+    const id = raw?.id?.S ?? raw?.id ?? "";
+    const content =
+      raw?.content?.S ?? raw?.answer?.S ?? raw?.description?.S ?? "";
+    const url = raw?.url?.S ?? raw?.url ?? "";
+    const kind = raw?.kind?.S ?? raw?.kind ?? "";
+    const s3Key = raw?.s3Key?.S ?? raw?.s3Key ?? "";
+    return {
+      id: String(id),
+      content: String(content),
+      url: String(url),
+      kind,
+      s3Key,
+    };
+  }
+
+  function renderImagesGrid(listEl, images) {
+    listEl.innerHTML = "";
+    images.forEach((imgItem) => {
+      const li = document.createElement("li");
+      li.dataset.id = imgItem.id;
+
+      const left = document.createElement("div");
+      left.style.display = "flex";
+      left.style.alignItems = "center";
+      left.style.gap = "12px";
+
+      const thumb = document.createElement("img");
+      thumb.src = imgItem.url;
+      thumb.alt = imgItem.content || "uploaded image";
+      thumb.style.maxHeight = "80px";
+      thumb.style.borderRadius = "6px";
+
+      const caption = document.createElement("span");
+      caption.textContent = imgItem.content || "(no description)";
+
+      const del = document.createElement("button");
+      del.textContent = "x";
+      del.style.marginLeft = "10px";
+      del.style.cursor = "pointer";
+      del.style.color = "#ff7b72";
+      del.style.background = "none";
+      del.style.border = "none";
+
+      del.addEventListener("click", async () => {
+        const id = li.dataset.id;
+        console.log("Deleting image id:", id);
+        li.remove();
+        await deleteFact(id); // your existing delete route now handles images (DDB + S3)
+      });
+
+      left.appendChild(thumb);
+      left.appendChild(caption);
+      li.appendChild(left);
+      li.appendChild(del);
+      factsList.appendChild(li);
+    });
+  }
+
+  viewImagesButton?.addEventListener("click", async () => {
+    try {
+      const res = await fetch(
+        reedChatUrl("reedchat-2"),
+        reedChatApiStuff({ httpMethod: "GET" })
+      );
+      if (!res.ok) throw new Error("Failed to fetch items");
+      const data = await res.json();
+
+      const images = data
+        .map(normalizeItem)
+        .filter(
+          (it) => it.kind === "image" || (it.url && it.url.startsWith("http"))
+        );
+
+      renderImagesGrid(factsList, images);
+      console.log(`✅ Displayed ${images.length} images`);
+    } catch (e) {
+      console.error("❌ Error fetching images:", e);
+    }
+  });
 
   uploadBtn?.addEventListener("click", async () => {
     try {
@@ -44,6 +126,8 @@ window.onload = function () {
         description: uploadDesc.value || "",
       };
 
+      console.log(initBody, "<-----initBody");
+
       const initRes = await fetch(reedChatUrl("reedchat-2"), {
         method: "POST",
         headers: {
@@ -51,6 +135,8 @@ window.onload = function () {
           // 'X-Portal-Token': PORTAL_TOKEN,
         },
         body: JSON.stringify(initBody),
+      }).catch((err) => {
+        console.log(err, "<----err");
       });
 
       if (!initRes.ok) {
