@@ -416,9 +416,12 @@ window.onload = function () {
     const data = await response.json();
 
     // Normalize to {id, content}, then filter OUT Instruction: items
-    const items = data
-      .map(normalizeItem)
-      .filter((it) => !it.content.startsWith("Instruction: "));
+    const items = data.map(normalizeItem).filter(
+      (it) =>
+        !it.content.startsWith("Instruction: ") &&
+        it.kind !== "image" &&
+        !it.url // in case some images lack kind but have a URL
+    );
 
     factsList.innerHTML = "";
     items.forEach((item) => appendLiWithDelete(factsList, item));
