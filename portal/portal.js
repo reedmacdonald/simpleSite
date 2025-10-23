@@ -89,6 +89,7 @@ window.onload = function () {
       );
       if (!res.ok) throw new Error("Failed to fetch items");
       const data = await res.json();
+      console.log(data, "<----data");
 
       const images = data
         .map(normalizeItem)
@@ -210,15 +211,6 @@ window.onload = function () {
     li.appendChild(img);
     li.appendChild(deleteBtn);
     listEl.appendChild(li);
-  }
-
-  //getFacts();
-
-  function normalizeItem(raw) {
-    // Supports either { id: {S}, content: {S} } OR { id: {S}, answer: {S} }
-    const id = raw?.id?.S ?? raw?.id ?? "";
-    const content = raw?.content?.S ?? raw?.answer?.S ?? "";
-    return { id: String(id), content: String(content) };
   }
 
   function appendLiWithDelete(listEl, item) {
