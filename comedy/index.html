@@ -45,8 +45,17 @@
           target="_blank"
           href="https://linkedin.com/in/reed-macdonald"
           >LinkedIn</a
-        >.
-      <p>Here are a few videos of me doing jokes in various forms:</p>
+        >
+        or my
+        <a
+          target="_blank"
+          href="https://www.tiktok.com/@reed.macdonald"
+          >TikTok</a
+        >
+        page.
+      </p>
+
+      <p>Here are a few videos of me doing jokes:</p>
 
       <div class="videoHolder">
         <div
@@ -90,6 +99,14 @@
             <div class="carousel-item">
               <video controls preload="metadata">
                 <source
+                  src="https://reed-portal-assets.s3.us-west-1.amazonaws.com/comedy/videos/SquidPart1.mov"
+                />
+              </video>
+              <p class="clip-title">Squid, Part 1</p>
+            </div>
+            <div class="carousel-item">
+              <video controls preload="metadata">
+                <source
                   src="https://reed-portal-assets.s3.us-west-1.amazonaws.com/comedy/videos/SquidPart2.mov"
                 />
               </video>
@@ -110,14 +127,6 @@
                 />
               </video>
               <p class="clip-title">Rethink Bad Idea</p>
-            </div>
-            <div class="carousel-item">
-              <video controls preload="metadata">
-                <source
-                  src="https://reed-portal-assets.s3.us-west-1.amazonaws.com/comedy/videos/SquidPart1.mov"
-                />
-              </video>
-              <p class="clip-title">Squid, Part 1</p>
             </div>
             <div class="carousel-item">
               <video controls preload="metadata">
@@ -249,10 +258,10 @@
     ></script>
     <script>
       document
-        .getElementById("comedyClipCarousel")
-        .addEventListener("slide.bs.carousel", () => {
+        .getElementById('comedyClipCarousel')
+        .addEventListener('slide.bs.carousel', () => {
           document
-            .querySelectorAll("#comedyClipCarousel video")
+            .querySelectorAll('#comedyClipCarousel video')
             .forEach((video) => video.pause());
         });
     </script>
