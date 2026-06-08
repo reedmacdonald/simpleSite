@@ -84,6 +84,54 @@ body {
   font-size: 20px;
 }
 
+.videoHolder {
+  margin: 24px auto 0;
+}
+
+.comedy-carousel {
+  background: #151515;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.comedy-carousel .carousel-item {
+  text-align: center;
+}
+
+.comedy-carousel video {
+  aspect-ratio: 9 / 16;
+  background: #000;
+  display: block;
+  max-height: 72vh;
+  object-fit: contain;
+  width: 100%;
+}
+
+.comedy-carousel .clip-title {
+  background: rgba(0, 0, 0, 0.82);
+  color: #fff;
+  font-size: 16px;
+  line-height: 1.3;
+  margin: 0;
+  padding: 10px 56px;
+}
+
+.comedy-carousel .carousel-control-prev,
+.comedy-carousel .carousel-control-next {
+  bottom: 43px;
+  top: 0;
+  width: 18%;
+}
+
+.comedy-carousel .carousel-control-prev-icon,
+.comedy-carousel .carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.68);
+  border-radius: 999px;
+  background-size: 54%;
+  height: 44px;
+  width: 44px;
+}
+
 /* =============== */
 /* GLOBAL LAYOUT */
 /* =============== */
