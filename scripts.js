@@ -57,11 +57,30 @@ window.onload = function () {
         throw new Error("Failed to get response from server.");
       }
 
-      const data = await response.json();
+      let data = await response.json();
+
+      // Support both Lambda proxy responses and responses whose body has
+      // already been unwrapped by API Gateway.
+      if (typeof data.body === "string") {
+        try {
+          data = JSON.parse(data.body);
+        } catch {
+          throw new Error("The server returned an invalid response.");
+        }
+      }
+
       console.log("Full response data:", data);
 
-      const answer = data.choices[0].message.content;
-      const raw = data.choices[0].message.content || "";
+      if (data.error) {
+        const apiMessage = data.error.message || data.error;
+        throw new Error(apiMessage || "The AI service returned an error.");
+      }
+
+      const raw = data.choices?.[0]?.message?.content;
+      if (typeof raw !== "string" || !raw.trim()) {
+        throw new Error("The AI service returned an unexpected response.");
+      }
+
       const imageMatch = raw.match(/^IMAGE:\s*(\S+)/m);
       if (imageMatch) {
         const imgUrl = imageMatch[1];
